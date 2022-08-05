@@ -1,0 +1,86 @@
+package com.example.compose.rally
+
+import androidx.compose.material.Text
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.text.toUpperCase
+import com.example.compose.rally.ui.components.RallyTopAppBar
+import org.junit.Rule
+import org.junit.Test
+
+/**
+ *
+ * Created on 2022/08/03.
+ *
+ * Description:
+ *
+ * @author wooyj
+ *
+ */
+class TopAppBarTest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    @Test
+    fun rallyTopAppBarTest() {
+        val allScreens = RallyScreen.values().toList()
+        composeTestRule.setContent {
+            RallyTopAppBar(
+                allScreens = allScreens,
+                onTabSelected = {},
+                currentScreen = RallyScreen.Accounts
+            )
+        }
+
+        //composeTestRule{.finder}{.assertion}{.action}
+//        composeTestRule.onNodeWithContentDescription(RallyScreen.Accounts.name).assertIsSelected()
+
+
+        // MergeDescendants = 'true' : 이 노드에 하위 항목이 있지만 병합되었음을 알려줌
+
+        composeTestRule.onNode(
+            hasText(RallyScreen.Accounts.name.uppercase()) and hasParent(
+                hasContentDescription(RallyScreen.Accounts.name)
+            ), useUnmergedTree = true
+        ).assertExists()
+
+    }
+
+    //Semantics tree
+
+    @Test
+    fun rallyTopAppBarTest_currentLabelExists() {
+        val allScreens = RallyScreen.values().toList()
+        composeTestRule.setContent {
+            RallyTopAppBar(
+                allScreens = allScreens,
+                onTabSelected = {},
+                currentScreen = RallyScreen.Accounts
+            )
+        }
+
+        composeTestRule.onRoot(useUnmergedTree = true).printToLog("currentLabelExists")
+
+        composeTestRule.onNodeWithContentDescription(RallyScreen.Accounts.name).assertExists()
+    }
+
+
+    @Test
+    fun rallyTopAppBarTest_changeSelection() {
+        val allScreens = RallyScreen.values().toList()
+        composeTestRule.setContent {
+            RallyTopAppBar(
+                allScreens = allScreens,
+                onTabSelected = {},
+                currentScreen = RallyScreen.Accounts
+            )
+        }
+        with(composeTestRule.onNodeWithContentDescription(RallyScreen.Accounts.name)){
+            performClick()
+//            assertIsSelected()
+//            assertExists()
+        }
+    }
+
+}
